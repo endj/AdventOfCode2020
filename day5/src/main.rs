@@ -11,12 +11,11 @@ fn main() {
     part_one(&content);
     part_two(&content);
 }
-
 fn part_one(content: &String) {
     let boardings = content.split_whitespace();
     let mut max = 0;
     for board in boardings {
-        let id = seat_id(calculate_seat(&board));
+        let id = seat_id(&board);
         if id > max {
             max = id;
         }
@@ -32,7 +31,7 @@ fn part_two(content: &String) {
     let mut seats = 0;
 
     for board in boardings {
-        let id = seat_id(calculate_seat(&board));
+        let id = seat_id(&board);
         found_seat_sum += id;
         if id > max {
             max = id;
@@ -40,42 +39,24 @@ fn part_two(content: &String) {
         seats += 1;
     }
 
-    let expected_seat_sum = sum_of_series_range(max - seats, max);
-    println!("part-two {}", expected_seat_sum - found_seat_sum);
+    println!(
+        "part-two {}",
+        sum_of_series_range(max - seats, max) - found_seat_sum
+    );
 }
 
-fn sum_of_series_range(from: i32, to: i32) -> i32 {
+fn sum_of_series_range(from: i128, to: i128) -> i128 {
     ((to - from + 1) * (from + to)) / 2
 }
 
-fn calculate_seat(board: &str) -> (i32, i32) {
-    let mut r_l = 0;
-    let mut r_r = 127;
-    let mut s_l = 0;
-    let mut s_r = 7;
-
-    for c in board.chars() {
-        match c {
-            'F' => r_r = mid(r_l, r_r, false),
-            'B' => r_l = mid(r_l, r_r, true),
-            'L' => s_r = mid(s_l, s_r, false),
-            'R' => s_l = mid(s_l, s_r, true),
-            _ => (),
+fn seat_id(board: &str) -> i128 {
+    let mut id = 0;
+    for (i, b) in board.as_bytes().iter().rev().enumerate() {
+        if b == &b'B' || b == &b'R' {
+            id |= 1 << i;
         }
     }
-
-    return (r_l, s_l);
-}
-
-fn seat_id((row, column): (i32, i32)) -> i32 {
-    row * 8 + column
-}
-
-fn mid(left: i32, right: i32, add_one: bool) -> i32 {
-    return match add_one {
-        false => (left + right) / 2,
-        true => ((left + right) / 2) + 1,
-    };
+    return id;
 }
 
 #[cfg(test)]
@@ -84,32 +65,8 @@ mod tests {
 
     #[test]
     fn test_seat_id() {
-        assert_eq!(seat_id((44, 5)), 357);
-        assert_eq!(seat_id((70, 7)), 567);
-        assert_eq!(seat_id((14, 7)), 119);
-        assert_eq!(seat_id((102, 4)), 820);
-    }
-
-    #[test]
-    fn test_calc_seats() {
-        assert_eq!(calculate_seat("FBFBBFFRLR"), (44, 5));
-        assert_eq!(calculate_seat("BFFFBBFRRR"), (70, 7));
-        assert_eq!(calculate_seat("FFFBBBFRRR"), (14, 7));
-        assert_eq!(calculate_seat("BBFFBBFRLL"), (102, 4));
-    }
-
-    #[test]
-    fn test_mid() {
-        assert_eq!(mid(0, 127, false), 63);
-        assert_eq!(mid(0, 63, true), 32);
-        assert_eq!(mid(32, 63, false), 47);
-        assert_eq!(mid(32, 47, true), 40);
-        assert_eq!(mid(40, 47, true), 44);
-        assert_eq!(mid(44, 47, false), 45);
-        assert_eq!(mid(44, 45, false), 44);
-
-        assert_eq!(mid(0, 7, true), 4);
-        assert_eq!(mid(4, 7, false), 5);
-        assert_eq!(mid(4, 5, true), 5);
+        assert_eq!(seat_id("FBFBBFFRLR"), 357);
+        assert_eq!(seat_id("BFFFBBFRRR"), 567);
+        assert_eq!(seat_id("FFFBBBFRRR"), 119);
     }
 }
