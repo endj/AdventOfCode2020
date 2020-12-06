@@ -45,11 +45,11 @@ fn part_two(content: &String) {
     );
 }
 
-fn sum_of_series_range(from: i128, to: i128) -> i128 {
+fn sum_of_series_range(from: u64, to: u64) -> u64 {
     ((to - from + 1) * (from + to)) / 2
 }
 
-fn seat_id(board: &str) -> i128 {
+fn seat_id(board: &str) -> u64 {
     let mut id = 0;
     for (i, b) in board.as_bytes().iter().rev().enumerate() {
         if b == &b'B' || b == &b'R' {
@@ -70,3 +70,5 @@ mod tests {
         assert_eq!(seat_id("FFFBBBFRRR"), 119);
     }
 }
+
+
