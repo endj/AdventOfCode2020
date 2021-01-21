@@ -33,9 +33,9 @@ fn part_one(content: &str) {
     };
     for l in lines {
         if l.starts_with("ma") {
-            mask = parse_masks(i);
+            mask = parse_masks(l);
         } else {
-            let (address, value) = parse_address(i);
+            let (address, value) = parse_address(l);
             let masked_val = apply_mask(value, &mask);
             masked_values.insert(address, masked_val);
         }
