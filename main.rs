@@ -20,3 +20,8 @@ fn part_one(content: &str) {
 fn part_two(content: &str) {
 
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+}
